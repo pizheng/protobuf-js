@@ -24,7 +24,8 @@ Protobuf.Decoder = Class.create({
     var ret = {};
     this.stream = this.readUrl(url);
     while (this.stream.length != 0) {
-      var [type, tag] = this.readKey();
+      var keys = this.readKey();
+      var type = keys[0], tag = keys[1];
       var field = this.description[tag];
       if (!field) throw 'Invalid tag: ' + tag;
       switch (type) {
