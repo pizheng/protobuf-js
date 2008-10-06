@@ -15,17 +15,38 @@
     1: {name: 'name',  type: 'string', rule: 'required'},
     2: {name: 'id',    type: 'int32',  rule: 'required'},
     3: {name: 'email', type: 'string', rule: 'optional'},
+    PhoneNumber: {
+      1: {name: 'number', type: 'string', rule: 'required'},
+      2: {name: 'type', type: 'int32', rule: 'optional'},
+    },
+    4: {name: 'phone', type: 'PhoneNumber', rule: 'optional'},
   };
-  function inspect(obj) {
+  function inspect(obj, indentLevel) {
+    if (!indentLevel) indentLevel = 0;
+    var indent = '';
+    for (var i = 0; i < indentLevel; i++) indent += '  ';
+
     var ret = '';
     for (var key in obj) {
-      ret += key + ':' + obj[key] + "\n";
+      var val = obj[key];
+      ret += indent + key + ':'; 
+      if (typeof(val) == 'object') {
+        ret += "\n" + inspect(val, indentLevel + 1) + "\n";
+      }
+      else {
+        ret += val + "\n";
+      }
     }
+    return ret;
+  }
+  function getIndent(indentLevel) {
+    var ret = '';
+    for (var i = 0; i < indentLevel; i++) ret += '  ';
     return ret;
   }
   function testDecoder(file) {
     var url = '/data/' + file + '.bin';
-    $('result').innerHTML = inspect(new Protobuf.Decoder(description).decode(url));
+    $('result').innerHTML = inspect(new Protobuf.Decoder(description).decodeUrl(url));
   }
   </script>
 </head>
@@ -33,7 +54,12 @@
   <div id="container">
     <div>
       <button onclick="testDecoder($('target').value)">Decode!</button>
-      Source: /data/<input id="target" value="simple"></input>.bin
+      Source: /data/
+      <select id="target" style="width:60px;"> 
+        <option value="simple">simple</option>
+        <option value="embed">embed</option>
+      </select>
+      .bin
     </div>
     <pre id="result"></pre>
     <button onclick="$('result').innerHTML = ''">Clear!</button>
