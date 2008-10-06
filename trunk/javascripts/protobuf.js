@@ -34,7 +34,7 @@ Protobuf.Decoder = Class.create({
       if (!field) throw 'Invalid tag: ' + tag;
       switch (type) {
       case Protobuf.WireType.VARINT:
-        ret[field.name] = this.readVarint();
+        this.setField(ret, this.readVarint(), field);
         break;
       case Protobuf.WireType.BIT64:
         throw 'Not yet';
@@ -42,14 +42,14 @@ Protobuf.Decoder = Class.create({
       case Protobuf.WireType.LENGTH_DELIMITED:
         var data = this.readLengthDelimited();
         if (field.type == 'string') {
-          ret[field.name] = String.fromCharCode.apply(String, data);
+          this.setField(ret, String.fromCharCode.apply(String, data), field);
         }
         else if (field.type == 'bytes') {
-          ret[field.name] = data;
+          this.setField(ret, data, field);
         }
         else {
           var embeddedDescription = this.description[field.type];
-          ret[field.name] = new Protobuf.Decoder(embeddedDescription).decode(data);
+          this.setField(ret, new Protobuf.Decoder(embeddedDescription).decode(data), field);
         }
         break;
       case Protobuf.WireType.START_GROUP:
@@ -64,6 +64,16 @@ Protobuf.Decoder = Class.create({
       }
     }
     return ret;
+  },
+
+  setField: function(obj, value, field) {
+    if (field.rule == 'repeated') {
+      if (!obj[field.name]) obj[field.name] = [];
+      obj[field.name].push(value);
+    }
+    else {
+      obj[field.name] = value;
+    }
   },
 
   readKey: function() {

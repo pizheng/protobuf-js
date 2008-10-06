@@ -9,6 +9,7 @@
     #result { border:1px solid black; width:250px; height:150px; padding:10px; text-align:left; }
   </style>
   <script src="lib/prototype.js"></script>
+  <script src="lib/inspect.js"></script>
   <script src="javascripts/protobuf.js"></script>
   <script>
   var description = {
@@ -17,33 +18,10 @@
     3: {name: 'email', type: 'string', rule: 'optional'},
     PhoneNumber: {
       1: {name: 'number', type: 'string', rule: 'required'},
-      2: {name: 'type', type: 'int32', rule: 'optional'},
+      2: {name: 'type',   type: 'int32',  rule: 'optional'},
     },
-    4: {name: 'phone', type: 'PhoneNumber', rule: 'optional'},
+    4: {name: 'phone', type: 'PhoneNumber', rule: 'repeated'},
   };
-  function inspect(obj, indentLevel) {
-    if (!indentLevel) indentLevel = 0;
-    var indent = '';
-    for (var i = 0; i < indentLevel; i++) indent += '  ';
-
-    var ret = '';
-    for (var key in obj) {
-      var val = obj[key];
-      ret += indent + key + ':'; 
-      if (typeof(val) == 'object') {
-        ret += "\n" + inspect(val, indentLevel + 1) + "\n";
-      }
-      else {
-        ret += val + "\n";
-      }
-    }
-    return ret;
-  }
-  function getIndent(indentLevel) {
-    var ret = '';
-    for (var i = 0; i < indentLevel; i++) ret += '  ';
-    return ret;
-  }
   function testDecoder(file) {
     var url = '/data/' + file + '.bin';
     $('result').innerHTML = inspect(new Protobuf.Decoder(description).decodeUrl(url));
