@@ -11,7 +11,7 @@ var description = {
     1: {name: 'number', type: 'string', rule: 'required'}
     2: {name: 'type',   type: 'int32',  rule: 'optional'},
   },
-  4: {name: 'phone', type: 'PhoneNumber', rule: 'optional'},
+  4: {name: 'phone', type: 'PhoneNumber', rule: 'repeated'},
 };
 }}}
 
@@ -29,7 +29,10 @@ var person = new Protobuf.Decoder(description).decodeUrl(url);
 name:ando
 id:123
 email:ando@example.com
-phone:
-  number:123-456
-  type:1
+phone:[
+  0:
+    number:123-456
+    type:1
+
+]
 }}}
