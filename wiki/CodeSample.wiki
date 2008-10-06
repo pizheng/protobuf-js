@@ -9,7 +9,7 @@ var description = {
   3: {name: 'email', type: 'string', rule: 'optional'},
   PhoneNumber: {
     1: {name: 'number', type: 'string', rule: 'required'}
-    2: {name: 'type', type: 'int32', rule: 'optional'},
+    2: {name: 'type',   type: 'int32',  rule: 'optional'},
   },
   4: {name: 'phone', type: 'PhoneNumber', rule: 'optional'},
 };
