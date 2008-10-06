@@ -24,6 +24,7 @@ var person = new Protobuf.Decoder(description).decodeUrl(url);
 = Result =
   * [http://code.google.com/p/protobuf-js/source/browse/trunk/data/embed.proto proto]
   * [http://code.google.com/p/protobuf-js/source/browse/trunk/data/embed.bin binary]
+
 {{{
 name:ando
 id:123
