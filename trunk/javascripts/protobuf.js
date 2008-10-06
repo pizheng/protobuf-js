@@ -20,9 +20,13 @@ Protobuf.Decoder = Class.create({
     return bytes;
   },
 
-  decode: function(url) {
+  decodeUrl: function(url) {
+    return this.decode(this.readUrl(url));
+  },
+
+  decode: function(stream) {
+    this.stream = stream;
     var ret = {};
-    this.stream = this.readUrl(url);
     while (this.stream.length != 0) {
       var keys = this.readKey();
       var type = keys[0], tag = keys[1];
@@ -40,15 +44,17 @@ Protobuf.Decoder = Class.create({
         if (field.type == 'string') {
           ret[field.name] = String.fromCharCode.apply(String, data);
         }
+        else if (field.type == 'bytes') {
+          ret[field.name] = data;
+        }
         else {
-          throw 'Not yet';
+          var embeddedDescription = this.description[field.type];
+          ret[field.name] = new Protobuf.Decoder(embeddedDescription).decode(data);
         }
         break;
       case Protobuf.WireType.START_GROUP:
-        throw 'Not yet';
-        break;
       case Protobuf.WireType.END_GROUP:
-        throw 'Not yet';
+        throw 'Have not implemented error';
         break;
       case Protobuf.WireType.BIT32:
         throw 'Not yet';
